@@ -3,20 +3,26 @@ document.addEventListener("DOMContentLoaded", () => {
     const buttons = document.querySelectorAll('.btn');
     const historyList = document.getElementById('historyList');
     const clearButton = document.getElementById('clear');
+    const clearHistoryButton = document.getElementById('clearHistory')
 
     loadHistory();
 
-    buttons.forEach(buttons => {
-        buttons.addEventListener('click', () => {
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
             const value = button.getAttribute('data-value');
 
             if (value === '=') {
                 try  {
                     const result = eval(display.value);
                     addHistory(display.value + ' = ' + result);
+                    display.value = result;
             } catch{
                 display.value ='Error';
             }
+
+        } else if (value === 'C') {
+            display.value = '';
+
         } else {
             if (display.value === 'Error') {
                 display.value = '';
@@ -30,14 +36,19 @@ clearButton.addEventListener('click', () => {
     display.value = '';
 });
 
+clearHistoryButton.addEventListener('click', () => {
+    localStorage.removeItem('calculatorHistory');
+    renderHistory();
+});
+
 function addHistory(operation) {
     const history = JSON.parse(localStorage.getItem('calculatorHistory')) || [];
     history.push(operation);
     localStorage.setItem('calculatorHistory', JSON.stringify(history));
-    renderHistorty();
+    renderHistory();
 }
 
-function renderHistorty() {
+function renderHistory() {
     const history = JSON.parse(localStorage.getItem('calculatorHistory')) || [];
     historyList,innerHTML = '';
     history.forEach(item => {
@@ -48,7 +59,7 @@ function renderHistorty() {
 }
 
 function loadHistory() {
-    renderHistorty();
+    renderHistory();
 }
 
 });
